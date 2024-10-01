@@ -31,7 +31,7 @@ class CertificateState(StatesGroup):
 @dp.message(Command("start"))
 async def start_message(message: Message):
     print(message.text)
-    msg = f"""Assalomu alaykum {message.from_user.full_name}\n «IT ACADEMY NAMANGAN» MCHJ НАМАНГАН Ш., МФО:00873; ИНН:311130419; Манзил:   Namangan viloyati Namangan shahar Yangi yol MFY, Yikchilik ko'chasi, 32-uy Рахбар:SHARIPOV AKBARALI MUMINOVICH"""
+    msg = f"""Assalomu alaykum {message.from_user.full_name}\n «IT ACADEMY NAMANGAN» MCHJ НАМАНГАН Ш., МФО:00873; ИНН:311130419; Манзил:   Namangan viloyati Namangan shahar Yangi yol MFY, Yikchilik ko'chasi, 32-uy Рахбар:SHARIPOV AKBARALI MUMINOVICH\n\nAloqa uchun: +998999145888"""
     await message.answer(msg)
     try:
         pic_uuid = message.text.split(" ")[1].strip()
