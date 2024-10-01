@@ -14,13 +14,13 @@ def gen_qr_code(
     :param data: The data to encode in the QR code.
     :param filename: The filename to save the QR code image.
     :param size: The size of each individual QR code box (default is 10).
-    :param version: The version of the QR code (1-40, higher versions can hold more data).
+    :param version: The version of the QR   code (1-40, higher versions can hold more data).
     :param error_correction: Error correction level (L, M, Q, H).
     """
     qr = qrcode.QRCode(
         version=version,
         error_correction=error_correction,
-        box_size=size,
+        box_size=size,  
         border=4,
     )
 

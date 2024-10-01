@@ -11,7 +11,6 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.storage.memory import MemoryStorage
 
-
 env = environs.Env()
 env.read_env()
 API_TOKEN = env.str("BOT_TOKEN")
@@ -57,6 +56,12 @@ async def start_message(message: Message):
 async def handle_pic_command(message: Message, state: FSMContext):
     await message.answer("Iltimos, sertifikat rasmini jo'nating")
     await state.set_state(CertificateState.picture)
+
+
+@dp.message(Command("cancel"))
+async def cancel_command(message: Message, state: FSMContext):
+    await state.clear()
+    await message.answer("Bekor qilindi!")
 
 
 @dp.message(CertificateState.picture)
