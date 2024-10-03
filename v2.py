@@ -50,7 +50,7 @@ class CertificateState(StatesGroup):
 
 @dp.message(Command("start"))
 async def start_message(message: Message):
-    msg = f"""Assalomu alaykum {message.from_user.full_name}\n «IT ACADEMY NAMANGAN» MCHJ НАМАНГАН Ш., МФО:00873; ИНН:311130419; Манзил:   Namangan viloyati Namangan shahar Yangi yol MFY, Yikchilik ko'chasi, 32-uy\n\nIT Park resident N 14/11 29.03.2024\n\nConfirmation N 2576\n\nTa’sischi: Sharipov Akbarali \nRahbar: ABDUVALIYEV JALOLIDDIN JAMОЛ O’G’ЛI\nAloqa: +998999145888"""
+    msg = f"""Assalomu alaykum {message.from_user.full_name}\n «IT ACADEMY NAMANGAN» MCHJ НАМАНГАН Ш., МФО:00873; ИНН:311130419; Манзил:   Namangan viloyati Namangan shahar Yangi yol MFY, Yikchilik ko'chasi, 32-uy\n\nIT Park resident N 14/11 29.03.2024\n\nConfirmation N 2576\n\nTa’sischi: Sharipov Akbarali \nRahbar: ABDUVALIYEV JALOLIDDIN JAMОL O’G’LI\nAloqa uchun: +998999145888"""
     await message.answer(msg)
 
 
