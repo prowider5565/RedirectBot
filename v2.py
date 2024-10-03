@@ -60,6 +60,12 @@ async def handle_pic_command(message: Message, state: FSMContext):
     await state.set_state(CertificateState.fullname)
 
 
+@dp.message(Command("cancel"))
+async def cancel_command(message: Message, state: FSMContext):
+    await state.clear()
+    await message.answer("Bekor qilindi!")
+
+
 @dp.message(CertificateState.fullname)
 async def handle_fullname_state(message: Message, state: FSMContext):
     await state.update_data(fullname=message.text)
@@ -131,12 +137,6 @@ async def handle_fullname_search(message: Message):
             await message.answer("😔 Sertifikat topilmadi.")
     else:
         await message.answer("😔 Uzr, bunday ism bilan sertifikat topilmadi.")
-
-
-@dp.message(Command("cancel"))
-async def cancel_command(message: Message, state: FSMContext):
-    await state.clear()
-    await message.answer("Bekor qilindi!")
 
 
 if __name__ == "__main__":
