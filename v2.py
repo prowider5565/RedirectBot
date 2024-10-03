@@ -54,7 +54,7 @@ async def start_message(message: Message):
     await message.answer(msg)
 
 
-@dp.message(Command("pic"))
+@dp.message(Command("create"))
 async def handle_pic_command(message: Message, state: FSMContext):
     await message.answer("Iltimos, to'liq ismingizni kiriting:")
     await state.set_state(CertificateState.fullname)
