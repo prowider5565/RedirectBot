@@ -23,7 +23,7 @@ QRCODE_DIR = "media/qrcode"
 os.makedirs(CERTIFICATES_DIR, exist_ok=True)
 os.makedirs(QRCODE_DIR, exist_ok=True)
 
-
+        
 class CertificateState(StatesGroup):
     picture = State()
 
