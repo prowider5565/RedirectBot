@@ -1,16 +1,19 @@
-import uuid
-import sqlite3
-from aiogram import Bot, Dispatcher, types
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message, FSInputFile
+from aiogram.types.input_file import InputFile
+from aiogram.fsm.context import FSMContext
+from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 import environs
 import logging
+import sqlite3
+import uuid
 import os
-from utils import gen_qr_code
-from aiogram.types.input_file import InputFile
-from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup, State
-from aiogram.fsm.storage.memory import MemoryStorage
+
+from utils import gen_qr_code, get_image, get_db
+from states import SearchState, CertificateState
+
 
 # Environment and bot setup
 env = environs.Env()
@@ -27,35 +30,6 @@ QRCODE_DIR = "media/qrcode"
 os.makedirs(CERTIFICATES_DIR, exist_ok=True)
 os.makedirs(QRCODE_DIR, exist_ok=True)
 
-# SQLite database setup
-conn = sqlite3.connect("certificates.db")
-cursor = conn.cursor()
-cursor.execute(
-    """
-    CREATE TABLE IF NOT EXISTS certificates (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        fullname TEXT NOT NULL,
-        image_path TEXT NOT NULL
-    )
-"""
-)
-conn.commit()
-
-
-def get_image(fullname=None, _uuid=None):
-    if fullname:
-        cursor.execute(
-            "SELECT image_path FROM certificates WHERE fullname LIKE ?",
-            (f"%{fullname}%",),
-        )
-        result = cursor.fetchone()
-        if result:
-            return result[0]
-        else:
-            return False
-    elif _uuid:
-        return os.path.join("media", "certificates", f"{_uuid}.png")
-
 
 async def send_image(message, path):
     if os.path.exists(path):
@@ -67,16 +41,6 @@ async def send_image(message, path):
         )
     else:
         await message.answer("😔 Sertifikat topilmadi.")
-
-
-class CertificateState(StatesGroup):
-    fullname = State()
-    picture = State()
-
-
-class SearchState(StatesGroup):
-    full_name = State()
-
 
 @dp.message(Command("start"))
 async def start_message(message: Message):
@@ -167,6 +131,7 @@ async def handle_fullname_search(message: Message, state: FSMContext):
 
 
 if __name__ == "__main__":
+    get_db()
 
     async def main():
         await bot.delete_webhook(drop_pending_updates=True)

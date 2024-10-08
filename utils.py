@@ -1,4 +1,6 @@
+import sqlite3
 import qrcode
+import os
 
 
 def gen_qr_code(
@@ -20,7 +22,7 @@ def gen_qr_code(
     qr = qrcode.QRCode(
         version=version,
         error_correction=error_correction,
-        box_size=size,  
+        box_size=size,
         border=4,
     )
 
@@ -31,3 +33,38 @@ def gen_qr_code(
 
     # Save the QR code as a high-resolution PNG file
     img.save(filename)
+
+
+def get_image(fullname=None, _uuid=None):
+    cursor = get_db()
+    if fullname:
+        cursor.execute(
+            "SELECT image_path FROM certificates WHERE fullname LIKE ?",
+            (f"%{fullname}%",),
+        )
+        result = cursor.fetchone()
+        if result:
+            return result[0]
+        else:
+            return False
+    elif _uuid:
+        return os.path.join("media", "certificates", f"{_uuid}.png")
+
+
+
+
+
+def get_db():
+    conn = sqlite3.connect("certificates.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS certificates (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            fullname TEXT NOT NULL,
+            image_path TEXT NOT NULL
+        )
+    """
+    )
+    conn.commit()
+    return cursor
