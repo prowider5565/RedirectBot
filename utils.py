@@ -36,7 +36,7 @@ def gen_qr_code(
 
 
 def get_image(fullname=None, _uuid=None):
-    cursor = get_db()
+    _, cursor = get_db()
     if fullname:
         cursor.execute(
             "SELECT image_path FROM certificates WHERE fullname LIKE ?",
@@ -67,4 +67,4 @@ def get_db():
     """
     )
     conn.commit()
-    return cursor
+    return conn, cursor

@@ -29,6 +29,7 @@ CERTIFICATES_DIR = "media/certificates"
 QRCODE_DIR = "media/qrcode"
 os.makedirs(CERTIFICATES_DIR, exist_ok=True)
 os.makedirs(QRCODE_DIR, exist_ok=True)
+conn, cursor = get_db()
 
 
 async def send_image(message, path):
@@ -41,6 +42,7 @@ async def send_image(message, path):
         )
     else:
         await message.answer("😔 Sertifikat topilmadi.")
+
 
 @dp.message(Command("start"))
 async def start_message(message: Message):
@@ -131,7 +133,6 @@ async def handle_fullname_search(message: Message, state: FSMContext):
 
 
 if __name__ == "__main__":
-    get_db()
 
     async def main():
         await bot.delete_webhook(drop_pending_updates=True)
