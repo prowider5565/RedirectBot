@@ -23,7 +23,7 @@ QRCODE_DIR = "media/qrcode"
 os.makedirs(CERTIFICATES_DIR, exist_ok=True)
 os.makedirs(QRCODE_DIR, exist_ok=True)
 
-        
+
 class CertificateState(StatesGroup):
     picture = State()
 
@@ -36,8 +36,8 @@ async def start_message(message: Message):
     try:
         pic_uuid = message.text.split(" ")[1].strip()
         parsed_uuid = uuid.UUID(pic_uuid)
+        print("UUID is valid: " + str(parsed_uuid))
     except (IndexError, ValueError):
-        await message.answer("😔 Rasm UUID sini uzatishda xatolik")
         return
     pic_filename = f"{parsed_uuid}.png"
     pic_path = os.path.join(CERTIFICATES_DIR, pic_filename)

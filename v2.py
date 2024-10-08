@@ -42,16 +42,54 @@ cursor.execute(
 conn.commit()
 
 
-# States for managing user input
+def get_image(fullname=None, _uuid=None):
+    if fullname:
+        cursor.execute(
+            "SELECT image_path FROM certificates WHERE fullname LIKE ?",
+            (f"%{fullname}%",),
+        )
+        result = cursor.fetchone()
+        if result:
+            return result[0]
+        else:
+            return False
+    elif _uuid:
+        return os.path.join("media", "certificates", f"{_uuid}.png")
+
+
+async def send_image(message, path):
+    if os.path.exists(path):
+        photo = FSInputFile(path)
+        await bot.send_photo(
+            message.chat.id,
+            photo,
+            caption=f"😁 Marhamat {message.from_user.full_name}!",
+        )
+    else:
+        await message.answer("😔 Sertifikat topilmadi.")
+
+
 class CertificateState(StatesGroup):
     fullname = State()
     picture = State()
+
+
+class SearchState(StatesGroup):
+    full_name = State()
 
 
 @dp.message(Command("start"))
 async def start_message(message: Message):
     msg = f"""Assalomu alaykum {message.from_user.full_name}\n «IT ACADEMY NAMANGAN» MCHJ НАМАНГАН Ш., МФО:00873; ИНН:311130419; Манзил:   Namangan viloyati Namangan shahar Yangi yol MFY, Yikchilik ko'chasi, 32-uy\n\nIT Park resident N 14/11 29.03.2024\n\nConfirmation N 2576\n\nTa’sischi: Sharipov Akbarali \nRahbar: ABDUVALIYEV JALOLIDDIN JAMОL O’G’LI\nAloqa uchun: +998999145888"""
     await message.answer(msg)
+    try:
+        pic_uuid = message.text.split(" ")[1].strip()
+        parsed_uuid = uuid.UUID(pic_uuid)
+        photo = get_image(_uuid=parsed_uuid)
+        if photo:
+            await send_image(message, photo)
+    except (IndexError, ValueError):
+        return
 
 
 @dp.message(Command("create"))
@@ -112,31 +150,20 @@ async def handle_picture_state(message: Message, state: FSMContext):
 
 # New handler to search for a certificate by full name using LIKE
 @dp.message(Command("search"))
-async def handle_search_command(message: Message):
+async def handle_search_command(message: Message, state: FSMContext):
     await message.answer("Iltimos, to'liq ismingizni kiriting:")
+    await state.set_state(SearchState.full_name)
 
 
-@dp.message()
-async def handle_fullname_search(message: Message):
+@dp.message(SearchState.full_name)
+async def handle_fullname_search(message: Message, state: FSMContext):
     fullname = message.text.strip()
-    # Use LIKE with wildcards for partial matching
-    cursor.execute(
-        "SELECT image_path FROM certificates WHERE fullname LIKE ?", (f"%{fullname}%",)
-    )
-    result = cursor.fetchone()
-    if result:
-        image_path = result[0]
-        if os.path.exists(image_path):
-            photo = FSInputFile(image_path)
-            await bot.send_photo(
-                message.chat.id,
-                photo,
-                caption=f"😁 Marhamat {message.from_user.full_name}!",
-            )
-        else:
-            await message.answer("😔 Sertifikat topilmadi.")
+    photo = get_image(fullname=fullname)
+    if photo:
+        await send_image(message, photo)
     else:
-        await message.answer("😔 Uzr, bunday ism bilan sertifikat topilmadi.")
+        await message.answer("😔 Sertifikat topilmadi!")
+    await state.clear()
 
 
 if __name__ == "__main__":
