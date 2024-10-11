@@ -60,8 +60,11 @@ async def start_message(message: Message):
 
 @dp.message(Command("create"))
 async def handle_pic_command(message: Message, state: FSMContext):
-    await message.answer("Iltimos, to'liq ismingizni kiriting:")
-    await state.set_state(CertificateState.fullname)
+    if message.from_user.id == 2003049919:
+        await message.answer("Iltimos, to'liq ismingizni kiriting:")
+        await state.set_state(CertificateState.fullname)
+    else:
+        await message.answer("⚠️ Siz bu amalni bajara olmaysiz!!!")
 
 
 @dp.message(Command("cancel"))
