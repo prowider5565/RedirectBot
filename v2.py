@@ -20,6 +20,7 @@ env = environs.Env()
 env.read_env()
 API_TOKEN = env.str("BOT_TOKEN")
 BOT_USERNAME = env.str("BOT_USERNAME")
+USER_ID = env.list("USER_ID")
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(storage=MemoryStorage())
@@ -45,7 +46,7 @@ async def send_image(message, path):
 
 
 @dp.message(Command("start"))
-async def start_message(message: Message):
+async def start_message(message: Message):  
     msg = f"""Assalomu alaykum {message.from_user.full_name}\n «IT ACADEMY NAMANGAN» MCHJ НАМАНГАН Ш., МФО:00873; ИНН:311130419; Манзил:   Namangan viloyati Namangan shahar Yangi yol MFY, Yikchilik ko'chasi, 32-uy\n\nIT Park resident N 14/11 29.03.2024\n\nConfirmation N 2576\n\nTa’sischi: Sharipov Akbarali \nRahbar: ABDUVALIYEV JALOLIDDIN JAMОL O’G’LI\nAloqa uchun: +998999145888"""
     await message.answer(msg)
     try:
@@ -60,7 +61,8 @@ async def start_message(message: Message):
 
 @dp.message(Command("create"))
 async def handle_pic_command(message: Message, state: FSMContext):
-    if message.from_user.id == 2003049919:
+    print(USER_ID)
+    if str(message.from_user.id) in USER_ID:
         await message.answer("Iltimos, to'liq ismingizni kiriting:")
         await state.set_state(CertificateState.fullname)
     else:

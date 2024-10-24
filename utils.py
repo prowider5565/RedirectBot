@@ -68,3 +68,7 @@ def get_db():
     )
     conn.commit()
     return conn, cursor
+
+
+if __name__ == "__main__":
+    gen_qr_code("https://suzani-abdulhakim.uz/biz-haqimizda", "about_us.png")
